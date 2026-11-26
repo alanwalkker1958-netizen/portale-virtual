@@ -1,0 +1,16 @@
+[
+    {
+        "timestamp": "26\/11\/2026 05:06:51",
+        "ip": "127.0.0.1",
+        "user_agent": "python-requests\/2.31",
+        "reason": "User-Agent bot",
+        "data": []
+    },
+    {
+        "timestamp": "26\/11\/2026 05:06:51",
+        "ip": "127.0.0.1",
+        "user_agent": "python-requests\/2.31",
+        "reason": "User-Agent de bot\/scanner",
+        "data": []
+    }
+]
