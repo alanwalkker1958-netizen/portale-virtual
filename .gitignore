@@ -1,0 +1,10 @@
+.DS_Store
+*.log
+*.zip
+*.tar.gz
+*.bak
+.env
+node_modules/
+vendor/
+__MACOSX/
+webhook_log.txt
